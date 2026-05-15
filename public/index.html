@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MatMade Growth Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080808;
+      color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* HEADER */
+    .header {
+      background: #0f0f0f;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo-mark {
+      width: 38px; height: 38px;
+      background: #dc2626;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 18px; color: white; letter-spacing: -1px;
+    }
+    .header-title { font-size: 18px; font-weight: 700; color: #fff; }
+    .header-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .header-date { font-size: 13px; color: #aaa; }
+    .campaign-badge {
+      background: #dc2626;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .campaign-badge:hover { background: #b91c1c; }
+    .campaign-badge.started { background: #16a34a; cursor: default; }
+
+    /* MAIN */
+    .main { max-width: 1280px; margin: 0 auto; padding: 32px; }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 14px;
+    }
+
+    /* SCOREBOARD */
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .metric-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .metric-card:hover { border-color: #333; }
+    .metric-card.highlight { border-color: #dc262640; }
+    .metric-card.highlight::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: #dc2626;
+    }
+    .metric-label { font-size: 11px; color: #aaa; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .metric-value { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; }
+    .metric-value span { font-size: 18px; color: #777; font-weight: 400; }
+    .metric-sub { font-size: 12px; color: #777; margin-top: 6px; }
+    .metric-green .metric-value { color: #22c55e; }
+    .metric-red .metric-value { color: #dc2626; }
+    .metric-gold .metric-value { color: #f59e0b; }
+
+    /* PROGRESS BAR */
+    .progress-section { margin-bottom: 32px; }
+    .progress-bar-wrap {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .progress-title { font-size: 14px; font-weight: 600; color: #fff; }
+    .progress-pct { font-size: 14px; font-weight: 700; color: #dc2626; }
+    .progress-track {
+      background: #1a1a1a;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626, #ef4444);
+      border-radius: 99px;
+      transition: width 0.8s ease;
+      min-width: 4px;
+    }
+    .progress-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+    .progress-labels span { font-size: 11px; color: #888; }
+
+    /* TWO COLUMN LAYOUT */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+
+    /* MILESTONES */
+    .milestones-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .milestone-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #161616;
+    }
+    .milestone-item:last-child { border-bottom: none; }
+    .milestone-check {
+      width: 20px; height: 20px;
+      border: 2px solid #333;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .milestone-item.done .milestone-check {
+      background: #22c55e;
+      border-color: #22c55e;
+    }
+    .milestone-check svg { display: none; }
+    .milestone-item.done .milestone-check svg { display: block; }
+    .milestone-text { font-size: 13px; color: #ccc; }
+    .milestone-item.done .milestone-text { color: #fff; text-decoration: none; }
+
+    /* AI PROMPT */
+    .prompt-card {
+      background: #111;
+      border: 1px solid #dc262640;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .prompt-label { font-size: 12px; color: #dc2626; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .prompt-desc { font-size: 13px; color: #aaa; margin-bottom: 16px; line-height: 1.5; }
+    .prompt-examples {
+      display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;
+    }
+    .prompt-example {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-style: italic;
+    }
+    .prompt-example:hover { border-color: #dc2626; color: #fff; }
+    textarea.prompt-input {
+      background: #0d0d0d;
+      border: 1px solid #252525;
+      border-radius: 10px;
+      color: #f0f0f0;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 14px;
+      resize: none;
+      height: 100px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+    textarea.prompt-input:focus { border-color: #dc2626; }
+    textarea.prompt-input::placeholder { color: #333; }
+    .prompt-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .prompt-btn:hover { background: #b91c1c; }
+    .prompt-btn:disabled { background: #2a2a2a; color: #444; cursor: not-allowed; }
+    .prompt-response {
+      margin-top: 14px;
+      padding: 12px;
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #22c55e;
+      display: none;
+    }
+    .prompt-response.error { color: #ef4444; }
+    .prompt-response.visible { display: block; }
+
+    /* TABLES */
+    .table-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .table-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .table-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .table-count { font-size: 12px; color: #888; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      background: #0d0d0d;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    td {
+      padding: 13px 20px;
+      font-size: 13px;
+      color: #ddd;
+      border-bottom: 1px solid #141414;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #0f0f0f; }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-gray { background: #1e1e1e; color: #555; }
+    .badge-blue { background: #1e3a5f; color: #60a5fa; }
+    .badge-yellow { background: #451a03; color: #f59e0b; }
+    .badge-green { background: #14532d; color: #4ade80; }
+    .badge-red { background: #450a0a; color: #f87171; }
+    .badge-purple { background: #2e1065; color: #c4b5fd; }
+    .badge-orange { background: #431407; color: #fb923c; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px; right: 30px;
+      background: #111;
+      border: 1px solid #22c55e;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #22c55e;
+      max-width: 360px;
+      z-index: 999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.error { border-color: #ef4444; color: #ef4444; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* SPINNER */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #ffffff33;
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+    @media (max-width: 900px) {
+      .scoreboard { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    /* DAILY FOCUS */
+    .focus-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .focus-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .focus-card.urgent { border-color: #dc262660; }
+    .focus-card.urgent::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:#dc2626; }
+    .focus-card.good { border-color: #16a34a60; }
+    .focus-card.good::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:#16a34a; }
+    .focus-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+    .focus-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .focus-detail { font-size: 12px; color: #888; line-height: 1.5; }
+    .focus-number { font-size: 40px; font-weight: 900; color: #fff; line-height: 1; }
+    .focus-number.red { color: #dc2626; }
+    .focus-number.green { color: #22c55e; }
+
+    /* WEEKLY SCORECARD */
+    .scorecard-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .scorecard-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .scorecard-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .scorecard-week-selector { display: flex; gap: 8px; }
+    .week-pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      border: 1px solid #333;
+      background: none; color: #888;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .week-pill.active { background: #dc2626; border-color: #dc2626; color: #fff; }
+    .scorecard-table { width: 100%; border-collapse: collapse; }
+    .scorecard-table th {
+      padding: 10px 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: #888; background: #0d0d0d;
+      border-bottom: 1px solid #1a1a1a;
+      text-align: center;
+    }
+    .scorecard-table th:first-child { text-align: left; }
+    .scorecard-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #141414;
+      text-align: center;
+      color: #ccc; font-size: 13px;
+    }
+    .scorecard-table td:first-child { text-align: left; font-weight: 600; color: #fff; font-size: 13px; }
+    .scorecard-table tr:last-child td { border-bottom: none; }
+    .check-box {
+      width: 28px; height: 28px;
+      border: 2px solid #2a2a2a;
+      border-radius: 8px;
+      margin: 0 auto;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      background: #0d0d0d;
+    }
+    .check-box:hover { border-color: #555; }
+    .check-box.checked { background: #16a34a; border-color: #16a34a; }
+    .check-box svg { display: none; }
+    .check-box.checked svg { display: block; }
+    .add-week-btn {
+      margin: 16px 24px;
+      background: none;
+      border: 1px dashed #333;
+      color: #666;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .add-week-btn:hover { border-color: #dc2626; color: #dc2626; }
+
+    /* STORY QUEUE */
+    .story-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .story-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .story-queue-count { font-size: 12px; color: #888; }
+
+    /* OBJECTIONS TAB */
+    .objections-wrap { max-width: 1280px; margin: 0 auto; padding: 32px; }
+    .objections-header { margin-bottom: 28px; }
+    .objections-header h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .objections-header p { font-size: 14px; color: #bbb; }
+    .objection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .objection-item {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .objection-item:hover { border-color: #333; }
+    .objection-q {
+      font-size: 13px; font-weight: 700; color: #f59e0b;
+      margin-bottom: 12px; line-height: 1.4;
+      padding-left: 20px; position: relative;
+    }
+    .objection-q::before { content: '"'; position: absolute; left: 0; color: #666; font-size: 18px; top: -2px; }
+    .objection-a {
+      font-size: 13px; color: #ddd;
+      line-height: 1.7;
+      padding: 12px;
+      background: #0d0d0d;
+      border-radius: 8px;
+      border-left: 2px solid #dc2626;
+    }
+
+    /* TABS */
+    .tab-nav {
+      background: #0f0f0f;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 0 32px;
+      display: flex;
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: #888; }
+    .tab-btn.active { color: #fff; border-bottom-color: #dc2626; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ROADMAP */
+    .roadmap-wrap { max-width: 1280px; margin: 0 auto; padding: 32px; }
+    .roadmap-header { margin-bottom: 32px; }
+    .roadmap-header h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .roadmap-header p { font-size: 14px; color: #bbb; }
+
+    .roadmap-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .roadmap-track::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, #dc2626, #1e1e1e);
+      z-index: 0;
+    }
+
+    .phase-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+      transition: border-color 0.2s;
+    }
+    .phase-card.current { border-color: #dc2626; }
+    .phase-card.current::before {
+      content: 'YOU ARE HERE';
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #dc2626;
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .phase-number {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 2px solid #333;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #555;
+      margin-bottom: 14px;
+    }
+    .phase-card.current .phase-number { background: #dc2626; border-color: #dc2626; color: white; }
+    .phase-card.done .phase-number { background: #16a34a; border-color: #16a34a; color: white; }
+    .phase-name { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .phase-days { font-size: 11px; color: #dc2626; font-weight: 600; margin-bottom: 14px; }
+    .phase-metrics { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .phase-metric { display: flex; justify-content: space-between; align-items: center; }
+    .phase-metric-label { font-size: 11px; color: #999; }
+    .phase-metric-value { font-size: 12px; font-weight: 700; color: #fff; }
+    .phase-steps { border-top: 1px solid #1a1a1a; padding-top: 14px; display: flex; flex-direction: column; gap: 7px; }
+    .phase-step { font-size: 11px; color: #ccc; padding-left: 12px; position: relative; line-height: 1.4; }
+    .phase-step::before { content: '—'; position: absolute; left: 0; color: #666; }
+    .phase-step.tentative { color: #999; font-style: italic; }
+    .tentative-tag {
+      display: inline-block;
+      background: #1a1000;
+      color: #f59e0b;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    .roadmap-targets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .target-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .target-now { font-size: 11px; color: #888; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .target-arrow { font-size: 20px; color: #666; margin: 8px 0; }
+    .target-goal { font-size: 11px; color: #dc2626; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .target-now-val { font-size: 22px; font-weight: 800; color: #aaa; }
+    .target-goal-val { font-size: 22px; font-weight: 800; color: #fff; }
+    .target-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+    .roadmap-outreach {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .outreach-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 18px; }
+    .outreach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .outreach-channel { }
+    .outreach-channel-name { font-size: 12px; font-weight: 700; color: #f87171; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .outreach-step { font-size: 13px; color: #ccc; padding: 8px 0; border-bottom: 1px solid #1e1e1e; line-height: 1.5; }
+    .outreach-step:last-child { border-bottom: none; }
+    .outreach-step strong { color: #fff; }
+
+    /* TEMPLATES */
+    .templates-wrap { margin-bottom: 32px; }
+    .templates-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .templates-sub { font-size: 13px; color: #aaa; margin-bottom: 24px; }
+
+    .touch-block { margin-bottom: 28px; }
+    .touch-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .touch-num {
+      width: 28px; height: 28px;
+      background: #dc2626;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .touch-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .touch-timing { font-size: 12px; color: #dc2626; font-weight: 600; margin-left: auto; }
+
+    .template-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tmpl-tab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #333;
+      background: none;
+      color: #888;
+      transition: all 0.2s;
+    }
+    .tmpl-tab.active { background: #dc2626; border-color: #dc2626; color: #fff; }
+    .tmpl-tab:hover:not(.active) { border-color: #555; color: #ccc; }
+
+    .template-panels { position: relative; }
+    .template-panel { display: none; }
+    .template-panel.active { display: block; }
+
+    .template-card {
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .template-card-header {
+      padding: 12px 16px;
+      background: #111;
+      border-bottom: 1px solid #1e1e1e;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .template-card-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+    .copy-btn {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      color: #ccc;
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .copy-btn:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+    .copy-btn.copied { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+    .subject-line {
+      padding: 10px 16px;
+      background: #111;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 12px;
+      color: #888;
+    }
+    .subject-line strong { color: #ccc; }
+
+    .template-body {
+      padding: 16px;
+      font-size: 13px;
+      color: #e0e0e0;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .template-var {
+      color: #f59e0b;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-mark">M</div>
+    <div>
+      <div class="header-title">MatMade Growth Dashboard</div>
+      <div class="header-sub">50 States · 50 Days · 100 Gyms Paying</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"></div>
+    <div class="header-date" id="currentDate"></div>
+    <button class="campaign-badge" id="campaignBtn" onclick="startCampaign()">Start Campaign</button>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('roadmap')">Roadmap</button>
+  <button class="tab-btn" onclick="switchTab('objections')">Objections</button>
+</div>
+
+<!-- TAB: DASHBOARD -->
+<div class="tab-panel active" id="tab-dashboard">
+<div class="main">
+
+  <!-- DAILY FOCUS -->
+  <div class="section-label">Today's Focus</div>
+  <div class="focus-panel">
+    <div class="focus-card urgent">
+      <div class="focus-eyebrow">Outreach Target</div>
+      <div class="focus-number red">150</div>
+      <div class="focus-title">DMs to Send Today</div>
+      <div class="focus-detail">Instagram DM first — go to their MatMade page, copy the URL, paste it in the message</div>
+    </div>
+    <div class="focus-card" id="followupCard">
+      <div class="focus-eyebrow">Needs Follow-Up</div>
+      <div class="focus-number" id="followupCount">0</div>
+      <div class="focus-title">Gyms Going Cold</div>
+      <div class="focus-detail" id="followupDetail">Gyms messaged 3+ days ago with no stage change — don't let them go cold</div>
+    </div>
+    <div class="focus-card" id="storyCard">
+      <div class="focus-eyebrow">Story Pipeline</div>
+      <div class="focus-number" id="storyQueueCount">0</div>
+      <div class="focus-title">Stories in Queue</div>
+      <div class="focus-detail" id="storyQueueDetail">Stories collected but not yet posted — Wednesday needs one ready by Monday</div>
+    </div>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div class="section-label">Live Scoreboard</div>
+  <div class="scoreboard">
+    <div class="metric-card">
+      <div class="metric-label">Total Gyms Listed</div>
+      <div class="metric-value" id="totalGyms">8,485</div>
+      <div class="metric-sub">Across 50 states + 20 countries</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-label">Gyms Claimed</div>
+      <div class="metric-value" id="claimed">88</div>
+      <div class="metric-sub" id="claimedPct">1% of directory</div>
+    </div>
+    <div class="metric-card metric-green">
+      <div class="metric-label">Gyms Paying</div>
+      <div class="metric-value" id="paying">0</div>
+      <div class="metric-sub">Goal: 100</div>
+    </div>
+    <div class="metric-card metric-gold">
+      <div class="metric-label">Monthly Revenue</div>
+      <div class="metric-value">$<span id="mrr" style="font-size:36px;color:inherit;">0</span></div>
+      <div class="metric-sub">MRR</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">States Activated</div>
+      <div class="metric-value" id="statesActivated">0<span>/50</span></div>
+      <div class="metric-sub">Goal: 50 states</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-label">Days Into Campaign</div>
+      <div class="metric-value" id="daysIntoCampaign">0<span>/50</span></div>
+      <div class="metric-sub" id="daysRemaining">Campaign not started</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Stories Collected</div>
+      <div class="metric-value" id="storiesCollected">0</div>
+      <div class="metric-sub">Transformation stories</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Instagram Posts</div>
+      <div class="metric-value" id="instagramPosts">0</div>
+      <div class="metric-sub">Published this campaign</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-section">
+    <div class="progress-bar-wrap">
+      <div class="progress-header">
+        <div class="progress-title">50 States in 50 Days — Campaign Progress</div>
+        <div class="progress-pct" id="progressPct">0%</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>Day 1 — Georgia Pilot</span>
+        <span>Day 25 — 25 States</span>
+        <span>Day 50 — All 50 States</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MILESTONES + AI PROMPT -->
+  <div class="two-col">
+
+    <!-- MILESTONES -->
+    <div>
+      <div class="section-label">Campaign Milestones</div>
+      <div class="milestones-card">
+        <div id="milestonesList"></div>
+      </div>
+    </div>
+
+    <!-- AI PROMPT -->
+    <div>
+      <div class="section-label">AI Update — Just Tell It What Happened</div>
+      <div class="prompt-card">
+        <div class="prompt-label">Natural Language Update</div>
+        <div class="prompt-desc">Describe what happened and the dashboard updates automatically. No forms, no manual entry.</div>
+        <div class="prompt-examples">
+          <div class="prompt-example" onclick="fillPrompt(this)">Kenny Kim BJJ Academy in Marietta just claimed — Georgia, Pro tier, story not collected</div>
+          <div class="prompt-example" onclick="fillPrompt(this)">Mark the Georgia pilot as launched, we're on day 1</div>
+          <div class="prompt-example" onclick="fillPrompt(this)">Posted the Monday state locked in content for Week 1, mark it as Posted</div>
+          <div class="prompt-example" onclick="fillPrompt(this)">We now have 3 gyms paying — update the paying count and MRR is $237</div>
+        </div>
+        <textarea class="prompt-input" id="promptInput" placeholder="Tell me what happened... e.g. 'Marietta gym just claimed and upgraded to Pro tier'"></textarea>
+        <button class="prompt-btn" id="promptBtn" onclick="sendUpdate()">
+          <span id="btnText">Update Dashboard</span>
+        </button>
+        <div class="prompt-response" id="promptResponse"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GYM PIPELINE -->
+  <div class="section-label">Gym Outreach Pipeline</div>
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Gym Pipeline</div>
+      <div class="table-count" id="gymCount">0 gyms tracked</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Gym Name</th>
+          <th>State</th>
+          <th>City</th>
+          <th>Stage</th>
+          <th>Tier</th>
+          <th>Last Contact</th>
+          <th>Story</th>
+          <th>Posted</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="gymTableBody">
+        <tr><td colspan="8" class="empty-state">No gyms tracked yet — use the AI update box to add your first gym</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CONTENT CALENDAR -->
+  <div class="section-label">Content Calendar</div>
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Weekly Posts</div>
+      <div class="table-count" id="contentCount">0 posts</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Day</th>
+          <th>Post Type</th>
+          <th>Content Source</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="contentTableBody">
+        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STORY QUEUE -->
+  <div class="section-label">Transformation Story Queue</div>
+  <div class="story-card">
+    <div class="story-header">
+      <div class="table-title">Story Pipeline</div>
+      <div class="story-queue-count" id="storyTableCount">0 stories tracked</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Gym</th>
+          <th>Student</th>
+          <th>Status</th>
+          <th>Scheduled Date</th>
+          <th>Instagram</th>
+          <th>On Profile</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="storyTableBody">
+        <tr><td colspan="7" class="empty-state">No stories tracked yet — use the AI box: "Add a story from [Gym Name], student is [Name], status is Intro Made"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WEEKLY SCORECARD -->
+  <div class="section-label">Weekly Consistency Scorecard</div>
+  <div class="scorecard-card">
+    <div class="scorecard-header">
+      <div class="scorecard-title">Did You Hit Your Numbers?</div>
+      <div class="scorecard-week-selector" id="weekSelector"></div>
+    </div>
+    <table class="scorecard-table">
+      <thead>
+        <tr>
+          <th>Habit</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
+      </thead>
+      <tbody id="scorecardBody"></tbody>
+    </table>
+    <button class="add-week-btn" onclick="addScorecardWeek()">+ Add Next Week</button>
+  </div>
+
+</div>
+</div><!-- end tab-dashboard -->
+
+<!-- TAB: ROADMAP -->
+<div class="tab-panel" id="tab-roadmap">
+<div class="roadmap-wrap">
+
+  <div class="roadmap-header">
+    <h2>MatMade Growth Roadmap</h2>
+    <p>50 States · 50 Days · 100 Gyms Paying — Here's the exact path from where we are to where we're going.</p>
+  </div>
+
+  <!-- NOW vs GOAL -->
+  <div class="section-label">Where We Are vs. Where We're Going</div>
+  <div class="roadmap-targets" style="margin-bottom:40px;">
+    <div class="target-card">
+      <div class="target-now">Now</div>
+      <div class="target-now-val">88</div>
+      <div class="target-arrow">↓</div>
+      <div class="target-goal">Day 50 Goal</div>
+      <div class="target-goal-val">500+</div>
+      <div class="target-label">Gyms Claimed</div>
+    </div>
+    <div class="target-card">
+      <div class="target-now">Now</div>
+      <div class="target-now-val">0</div>
+      <div class="target-arrow">↓</div>
+      <div class="target-goal">Day 50 Goal</div>
+      <div class="target-goal-val">100</div>
+      <div class="target-label">Gyms Paying</div>
+    </div>
+    <div class="target-card">
+      <div class="target-now">Now</div>
+      <div class="target-now-val">$0</div>
+      <div class="target-arrow">↓</div>
+      <div class="target-goal">Day 50 Goal</div>
+      <div class="target-goal-val">$7,900+</div>
+      <div class="target-label">Monthly Revenue</div>
+    </div>
+    <div class="target-card">
+      <div class="target-now">Now</div>
+      <div class="target-now-val">1%</div>
+      <div class="target-arrow">↓</div>
+      <div class="target-goal">Day 50 Goal</div>
+      <div class="target-goal-val">6%+</div>
+      <div class="target-label">Directory Claimed</div>
+    </div>
+  </div>
+
+  <!-- PHASE TIMELINE -->
+  <div class="section-label">Campaign Phases</div>
+  <div class="roadmap-track">
+
+    <!-- PHASE 0 -->
+    <div class="phase-card current">
+      <div class="phase-number">0</div>
+      <div class="phase-name">Foundation</div>
+      <div class="phase-days">Pre-Launch — Right Now</div>
+      <div class="phase-metrics">
+        <div class="phase-metric"><span class="phase-metric-label">Claimed</span><span class="phase-metric-value">88</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Paying</span><span class="phase-metric-value">0</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">MRR</span><span class="phase-metric-value">$0</span></div>
+      </div>
+      <div class="phase-steps">
+        <div class="phase-step">Plan finalized & presented</div>
+        <div class="phase-step">Dashboard live & tracking</div>
+        <div class="phase-step">Brevo account set up</div>
+        <div class="phase-step">Georgia gym list pulled</div>
+        <div class="phase-step">DM script ready</div>
+        <div class="phase-step tentative">Content calendar built <span class="tentative-tag">TENTATIVE</span></div>
+      </div>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase-card">
+      <div class="phase-number">1</div>
+      <div class="phase-name">Georgia Pilot</div>
+      <div class="phase-days">Days 1–7</div>
+      <div class="phase-metrics">
+        <div class="phase-metric"><span class="phase-metric-label">Outreach/Day</span><span class="phase-metric-value">150</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Claimed</span><span class="phase-metric-value">50+</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Paying</span><span class="phase-metric-value">5+</span></div>
+      </div>
+      <div class="phase-steps">
+        <div class="phase-step">150 DMs/day to GA gyms</div>
+        <div class="phase-step">Brevo email sequence live</div>
+        <div class="phase-step">First city feature pitched</div>
+        <div class="phase-step">First paying gym closed</div>
+        <div class="phase-step tentative">Week 1 content goes live <span class="tentative-tag">TENTATIVE</span></div>
+        <div class="phase-step tentative">First story posted <span class="tentative-tag">TENTATIVE</span></div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-card">
+      <div class="phase-number">2</div>
+      <div class="phase-name">First 5 States</div>
+      <div class="phase-days">Days 8–20</div>
+      <div class="phase-metrics">
+        <div class="phase-metric"><span class="phase-metric-label">States Active</span><span class="phase-metric-value">5</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Claimed</span><span class="phase-metric-value">150+</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Paying</span><span class="phase-metric-value">25</span></div>
+      </div>
+      <div class="phase-steps">
+        <div class="phase-step">CA, TX, FL, NY added</div>
+        <div class="phase-step">150/day across all states</div>
+        <div class="phase-step">GA follow-ups continue</div>
+        <div class="phase-step">First $1K MRR target</div>
+        <div class="phase-step tentative">Content calendar running <span class="tentative-tag">TENTATIVE</span></div>
+        <div class="phase-step tentative">5 stories collected <span class="tentative-tag">TENTATIVE</span></div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-card">
+      <div class="phase-number">3</div>
+      <div class="phase-name">Mid-Campaign Push</div>
+      <div class="phase-days">Days 21–35</div>
+      <div class="phase-metrics">
+        <div class="phase-metric"><span class="phase-metric-label">States Active</span><span class="phase-metric-value">25</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Claimed</span><span class="phase-metric-value">300+</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Paying</span><span class="phase-metric-value">50</span></div>
+      </div>
+      <div class="phase-steps">
+        <div class="phase-step">10 more states added</div>
+        <div class="phase-step">City features selling</div>
+        <div class="phase-step">$2,500+ MRR target</div>
+        <div class="phase-step">Story pipeline self-sustaining</div>
+        <div class="phase-step tentative">Map content going viral <span class="tentative-tag">TENTATIVE</span></div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-card">
+      <div class="phase-number">4</div>
+      <div class="phase-name">Final Sprint</div>
+      <div class="phase-days">Days 36–50</div>
+      <div class="phase-metrics">
+        <div class="phase-metric"><span class="phase-metric-label">States Active</span><span class="phase-metric-value">50</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Claimed</span><span class="phase-metric-value">500+</span></div>
+        <div class="phase-metric"><span class="phase-metric-label">Target Paying</span><span class="phase-metric-value">100</span></div>
+      </div>
+      <div class="phase-steps">
+        <div class="phase-step">All 50 states activated</div>
+        <div class="phase-step">100 gyms paying</div>
+        <div class="phase-step">$7,900+ MRR target</div>
+        <div class="phase-step">State features pitched</div>
+        <div class="phase-step tentative">50 stories collected <span class="tentative-tag">TENTATIVE</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTREACH SEQUENCE -->
+  <div class="section-label">The Outreach System</div>
+  <div class="roadmap-outreach">
+    <div class="outreach-title">3-Touch Sequence — Instagram DM + Brevo Email</div>
+    <div class="outreach-grid">
+      <div class="outreach-channel">
+        <div class="outreach-channel-name">Touch 1 — Day 1</div>
+        <div class="outreach-step"><strong>Platform:</strong> Instagram DM</div>
+        <div class="outreach-step"><strong>Hook:</strong> Send them their actual MatMade page URL</div>
+        <div class="outreach-step"><strong>Message:</strong> "Your gym is already live on MatMade — here's your page. Is everything correct? Takes 2 minutes to claim it."</div>
+        <div class="outreach-step"><strong>Volume:</strong> 150/day</div>
+      </div>
+      <div class="outreach-channel">
+        <div class="outreach-channel-name">Touch 2 — Day 3</div>
+        <div class="outreach-step"><strong>Platform:</strong> Instagram DM + Brevo Email</div>
+        <div class="outreach-step"><strong>Hook:</strong> The story angle</div>
+        <div class="outreach-step"><strong>Message:</strong> "We're collecting transformation stories for the MatMade Instagram starting in your state. Does your gym have a story worth telling?"</div>
+        <div class="outreach-step"><strong>Volume:</strong> Follow-up on all Day 1 sends</div>
+      </div>
+      <div class="outreach-channel">
+        <div class="outreach-channel-name">Touch 3 — Day 5</div>
+        <div class="outreach-step"><strong>Platform:</strong> Instagram DM + Phone</div>
+        <div class="outreach-step"><strong>Hook:</strong> City feature scarcity</div>
+        <div class="outreach-step"><strong>Message:</strong> "The featured gym spot for [City] is open this week. One gym per city — once it's gone it's gone. Do you want it?"</div>
+        <div class="outreach-step"><strong>Volume:</strong> Only to gyms that claimed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGE TEMPLATES -->
+  <div class="section-label" style="margin-top:40px;">Message Templates — Copy & Send</div>
+  <div class="templates-wrap">
+    <div class="templates-title">Full Outreach Templates — Instagram DM + Email</div>
+    <div class="templates-sub">Click any template tab, hit Copy, and paste directly into Instagram or Brevo. Replace the highlighted fields before sending.</div>
+
+    <!-- TOUCH 1 -->
+    <div class="touch-block">
+      <div class="touch-header">
+        <div class="touch-num">1</div>
+        <div class="touch-title">The Claim — Your gym is already live</div>
+        <div class="touch-timing">Day 1 · Instagram DM first, Email same day</div>
+      </div>
+      <div class="template-tabs">
+        <button class="tmpl-tab active" onclick="switchTemplate('t1','dm')">Instagram DM</button>
+        <button class="tmpl-tab" onclick="switchTemplate('t1','email')">Brevo Email</button>
+      </div>
+      <div class="template-panels" id="t1">
+        <div class="template-panel active" id="t1-dm">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Instagram DM — Touch 1</div>
+              <button class="copy-btn" onclick="copyTemplate('t1-dm-body')">Copy</button>
+            </div>
+            <div class="template-body" id="t1-dm-body">Hey <span class="template-var">[Gym Name]</span>!
+
+Found your gym on MatMade — your page is already live right here:
+<span class="template-var">[Their MatMade URL — paste it directly]</span>
+
+Wanted to make sure you knew it was there and that everything looks correct. Is the address right? Are the hours accurate?
+
+Takes 2 minutes to claim it and fix anything that's off — completely free. You'd be the verified gym for <span class="template-var">[City]</span> on the largest BJJ directory in the world.
+
+Want me to send you the claim link?</div>
+          </div>
+        </div>
+        <div class="template-panel" id="t1-email">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Brevo Email — Touch 1</div>
+              <button class="copy-btn" onclick="copyTemplate('t1-email-body')">Copy</button>
+            </div>
+            <div class="subject-line"><strong>Subject:</strong> <span class="template-var">[Gym Name]</span> — your gym is already on MatMade</div>
+            <div class="template-body" id="t1-email-body">Hey <span class="template-var">[First Name]</span>,
+
+Quick heads up — <span class="template-var">[Gym Name]</span> is already listed on MatMade.com, the largest BJJ gym directory in the world with 8,400+ gyms across all 50 states.
+
+Here's your page: <span class="template-var">[Their MatMade URL]</span>
+
+We're going through <span class="template-var">[State]</span> this week making sure every gym has claimed their listing and that all the information is accurate. Claiming is completely free and takes about 2 minutes.
+
+Once you're verified, your gym shows up with a blue checkmark when anyone in <span class="template-var">[City]</span> searches for BJJ nearby.
+
+Claim your gym here → <span class="template-var">[Claim Link: matmade.com/claim]</span>
+
+— <span class="template-var">[Your Name]</span>
+MatMade Growth Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOUCH 2 -->
+    <div class="touch-block">
+      <div class="touch-header">
+        <div class="touch-num">2</div>
+        <div class="touch-title">The Story Hook — We want to feature your gym</div>
+        <div class="touch-timing">Day 3 · Instagram DM + Brevo Email</div>
+      </div>
+      <div class="template-tabs">
+        <button class="tmpl-tab active" onclick="switchTemplate('t2','dm')">Instagram DM</button>
+        <button class="tmpl-tab" onclick="switchTemplate('t2','email')">Brevo Email</button>
+      </div>
+      <div class="template-panels" id="t2">
+        <div class="template-panel active" id="t2-dm">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Instagram DM — Touch 2</div>
+              <button class="copy-btn" onclick="copyTemplate('t2-dm-body')">Copy</button>
+            </div>
+            <div class="template-body" id="t2-dm-body">Hey <span class="template-var">[Gym Name]</span> — following up on your MatMade page.
+
+We're building out our Transformation Story series for the MatMade Instagram (@matmade_show) and we're starting in <span class="template-var">[State]</span> this week.
+
+We're looking for gyms with real stories — students whose lives BJJ changed. Depression, anxiety, veterans finding their footing, people who found community after a loss — that kind of story.
+
+Does your gym have someone like that? Kenny Kim is personally selecting the gyms we feature.
+
+No cost at all — just a 15-minute conversation with the student. Their story goes on our Instagram and lives permanently on your MatMade page.</div>
+          </div>
+        </div>
+        <div class="template-panel" id="t2-email">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Brevo Email — Touch 2</div>
+              <button class="copy-btn" onclick="copyTemplate('t2-email-body')">Copy</button>
+            </div>
+            <div class="subject-line"><strong>Subject:</strong> We want to feature a story from <span class="template-var">[Gym Name]</span></div>
+            <div class="template-body" id="t2-email-body">Hey <span class="template-var">[First Name]</span>,
+
+I reached out a couple days ago about your MatMade listing — wanted to follow up with something different.
+
+We're launching our Transformation Story series on the MatMade Instagram this week. Kenny Kim is personally selecting stories from gyms across <span class="template-var">[State]</span>.
+
+We're looking for a student who:
+
+  • Overcame depression or anxiety through training
+  • Is a veteran who found community on the mat
+  • Lost significant weight and changed their life
+  • Battled addiction and found purpose through BJJ
+  • Walked through your door during the hardest moment of their life
+
+Their story gets featured on @matmade_show and lives permanently on your gym's MatMade profile page — so every person who finds you through the directory sees it.
+
+It's a 15-minute conversation. We handle everything else.
+
+Just reply with "interested" and I'll send you the details.
+
+— <span class="template-var">[Your Name]</span>
+MatMade Growth Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOUCH 3 -->
+    <div class="touch-block">
+      <div class="touch-header">
+        <div class="touch-num">3</div>
+        <div class="touch-title">The City Feature Close — One spot, 24 hours</div>
+        <div class="touch-timing">Day 5 · To claimed gyms only</div>
+      </div>
+      <div class="template-tabs">
+        <button class="tmpl-tab active" onclick="switchTemplate('t3','dm')">Instagram DM</button>
+        <button class="tmpl-tab" onclick="switchTemplate('t3','email')">Brevo Email</button>
+      </div>
+      <div class="template-panels" id="t3">
+        <div class="template-panel active" id="t3-dm">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Instagram DM — Touch 3</div>
+              <button class="copy-btn" onclick="copyTemplate('t3-dm-body')">Copy</button>
+            </div>
+            <div class="template-body" id="t3-dm-body">Hey <span class="template-var">[Gym Name]</span> — your gym is verified on MatMade now.
+
+One more thing before we move on to the next city.
+
+We're opening the Featured Gym spot for <span class="template-var">[City]</span> this week. Here's what that means — your gym goes to the TOP of the <span class="template-var">[City]</span> page. First thing anyone sees when they search BJJ in <span class="template-var">[City]</span>.
+
+One gym per city. Once it's sold it doesn't come back.
+
+It's $149/month. If you want it reply and I'll hold the spot for 24 hours. If not I'll move to the next gym on the list.
+
+Your call.</div>
+          </div>
+        </div>
+        <div class="template-panel" id="t3-email">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Brevo Email — Touch 3</div>
+              <button class="copy-btn" onclick="copyTemplate('t3-email-body')">Copy</button>
+            </div>
+            <div class="subject-line"><strong>Subject:</strong> The <span class="template-var">[City]</span> featured spot — 24 hour hold for <span class="template-var">[Gym Name]</span></div>
+            <div class="template-body" id="t3-email-body">Hey <span class="template-var">[First Name]</span>,
+
+<span class="template-var">[Gym Name]</span> is now verified on MatMade — you're one of the first gyms in <span class="template-var">[City]</span> to claim your listing.
+
+Before we move on, I wanted to give you first look at something.
+
+We're selling the Featured Gym placement for <span class="template-var">[City]</span>. Here's exactly what that means:
+
+→ Your gym appears at the TOP of the <span class="template-var">[City]</span> page on MatMade
+→ Every person searching "BJJ gym in <span class="template-var">[City]</span>" sees you first
+→ Exclusive — one gym per city, this spot does not come back once it's sold
+→ $149/month
+
+The <span class="template-var">[City]</span> page already pulls search traffic. The featured spot puts you at the front of all of it.
+
+I'll hold this for 24 hours. After that it goes to the next gym on our list.
+
+Want it? Reply here and I'll send you the link to lock it in.
+
+— <span class="template-var">[Your Name]</span>
+MatMade Growth Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div><!-- end tab-roadmap -->
+
+<!-- TAB: OBJECTIONS -->
+<div class="tab-panel" id="tab-objections">
+<div class="objections-wrap">
+  <div class="objections-header">
+    <h2>Objection Quick Reference</h2>
+    <p>When a gym owner pushes back — have the comeback ready in under 5 seconds. Pull this up mid-conversation.</p>
+  </div>
+  <div class="objection-grid">
+
+    <div class="objection-item">
+      <div class="objection-q">I've never heard of MatMade.</div>
+      <div class="objection-a">That's exactly why I'm reaching out. MatMade is the largest BJJ gym directory in the world — 8,400+ gyms across all 50 states and 20 countries. Your gym is already listed. We're just making sure you own your page before someone else's info shows up on it.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">I already have a website and a Google page. I don't need this.</div>
+      <div class="objection-a">Those are great for people who already know you exist. MatMade is for people who don't know you yet — someone new to the area, just getting into BJJ, searching for a gym. You're already in the directory. We're just making sure when they find you, they see the best version of your gym.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">Why do I have to pay for my own listing?</div>
+      <div class="objection-a">You don't — claiming is completely free. Takes 2 minutes. The paid tiers are for gym owners who want to stand out from the other gyms in their city. Free gets you in the directory. Pro gets you to the top of it.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">How do I know people actually use MatMade?</div>
+      <div class="objection-a">MatMade has 8,400+ gyms indexed and ranks on Google for "[City] BJJ gym" searches across thousands of cities. The city page for your city already exists and is pulling search traffic. The question isn't whether people are finding it — it's whether your gym looks its best when they do.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">I don't have time for this.</div>
+      <div class="objection-a">Claiming takes 2 minutes. After that we handle everything — we collect the content, format the page, write the story. You just intro us to one student whose life your gym changed. That's it.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">We already have plenty of students. We don't need more leads.</div>
+      <div class="objection-a">That's a good problem to have. This isn't just about leads — it's about legacy. The transformation stories we put on your page and post on the MatMade Instagram are a permanent record of what your gym has built. The best gyms in the country are going to be on here. Where do you want your gym to be in that conversation?</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">Can I think about it?</div>
+      <div class="objection-a">Absolutely. Just so you know — we're locking in the city feature spot for [City] this week. There's only one per city and once it's taken it's gone. The listing itself stays free forever, so no rush on that. But if the featured placement is something you want, this week is the window.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">The free tier is enough for me.</div>
+      <div class="objection-a">Totally fine — a lot of gyms start there. The reason most upgrade to Pro is the transformation stories. We collect them, post them on the MatMade Instagram, and they live permanently on your page. Gym owners find that their students share those posts more than anything else they put out. But start with free and see how it feels.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">What happens to my content if I cancel?</div>
+      <div class="objection-a">Your listing stays up. Basic info stays public. The rich content — hero images, videos, stories — those pause until you reactivate. Nothing gets deleted. Come back anytime and everything's still there.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="objection-q">I'm not tech savvy enough to manage a profile.</div>
+      <div class="objection-a">You don't have to be. Claiming is a form — name, email, done. After that we walk you through everything. If you're on Pro, we help set up the page for you. You tell us about your gym, we handle the rest.</div>
+    </div>
+
+  </div>
+</div>
+</div><!-- end tab-objections -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  let dashData = {};
+
+  // --- INIT ---
+  async function init() {
+    updateDate();
+    setInterval(updateDate, 60000);
+    await loadData();
+  }
+
+  function updateDate() {
+    const now = new Date();
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  async function loadData() {
+    const res = await fetch('/api/data');
+    dashData = await res.json();
+    render(dashData);
+  }
+
+  // --- RENDER ---
+  function render(data) {
+    const s = data.scoreboard;
+
+    document.getElementById('totalGyms').textContent = s.totalGyms.toLocaleString();
+    document.getElementById('claimed').textContent = s.claimed.toLocaleString();
+    document.getElementById('paying').textContent = s.paying.toLocaleString();
+    document.getElementById('mrr').textContent = s.mrr.toLocaleString();
+    document.getElementById('statesActivated').innerHTML = `${s.statesActivated}<span>/50</span>`;
+    document.getElementById('daysIntoCampaign').innerHTML = `${s.daysIntoCampaign}<span>/50</span>`;
+    document.getElementById('storiesCollected').textContent = s.storiesCollected;
+    document.getElementById('instagramPosts').textContent = s.instagramPosts;
+
+    const claimedPct = ((s.claimed / s.totalGyms) * 100).toFixed(1);
+    document.getElementById('claimedPct').textContent = `${claimedPct}% of directory`;
+
+    const progressPct = Math.min((s.statesActivated / 50) * 100, 100);
+    document.getElementById('progressPct').textContent = `${progressPct.toFixed(0)}%`;
+    document.getElementById('progressFill').style.width = `${progressPct}%`;
+
+    if (data.campaignStartDate) {
+      const start = new Date(data.campaignStartDate);
+      const now = new Date();
+      const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+      const remaining = Math.max(50 - days, 0);
+      document.getElementById('daysRemaining').textContent = `${remaining} days remaining`;
+      document.getElementById('campaignBtn').textContent = 'Campaign Active';
+      document.getElementById('campaignBtn').classList.add('started');
+    }
+
+    renderMilestones(data.milestones);
+    renderGyms(data.gyms);
+    renderContent(data.content);
+    renderStories(data.stories);
+    renderScorecard(data.weeklyScorecard);
+  }
+
+  function renderMilestones(milestones) {
+    const container = document.getElementById('milestonesList');
+    container.innerHTML = milestones.map(m => `
+      <div class="milestone-item ${m.completed ? 'done' : ''}">
+        <div class="milestone-check">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="milestone-text">${m.label}</div>
+      </div>
+    `).join('');
+  }
+
+  function daysSince(dateStr) {
+    if (!dateStr) return null;
+    const diff = Math.floor((new Date() - new Date(dateStr)) / (1000*60*60*24));
+    return diff;
+  }
+
+  function lastContactedDisplay(dateStr) {
+    const d = daysSince(dateStr);
+    if (d === null) return '<span style="color:#444;">—</span>';
+    if (d === 0) return '<span style="color:#22c55e;font-weight:700;">Today</span>';
+    if (d === 1) return '<span style="color:#22c55e;">Yesterday</span>';
+    if (d <= 2) return `<span style="color:#f59e0b;font-weight:700;">${d}d ago</span>`;
+    return `<span style="color:#dc2626;font-weight:700;">${d}d ago ⚠</span>`;
+  }
+
+  function renderGyms(gyms) {
+    const tbody = document.getElementById('gymTableBody');
+    document.getElementById('gymCount').textContent = `${gyms.length} gym${gyms.length !== 1 ? 's' : ''} tracked`;
+
+    if (gyms.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No gyms tracked yet — use the AI update box to add your first gym</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = gyms.map(g => `
+      <tr>
+        <td style="font-weight:600;color:#fff;">${g.name}</td>
+        <td>${g.state}</td>
+        <td>${g.city}</td>
+        <td>${stageBadge(g.stage)}</td>
+        <td>${tierBadge(g.tier)}</td>
+        <td>${lastContactedDisplay(g.lastContacted)}</td>
+        <td>${g.storyCollected ? '<span style="color:#22c55e;">✓ Yes</span>' : '<span style="color:#555;">No</span>'}</td>
+        <td>${g.instagramPosted ? '<span style="color:#22c55e;">✓ Yes</span>' : '<span style="color:#555;">No</span>'}</td>
+        <td style="color:#777;font-size:12px;">${g.notes || '—'}</td>
+      </tr>
+    `).join('');
+
+    // Update daily focus follow-up count
+    const coldGyms = gyms.filter(g => {
+      const d = daysSince(g.lastContacted);
+      return d !== null && d >= 3 && g.stage !== 'Closed' && g.stage !== 'Claimed';
+    });
+    const fc = document.getElementById('followupCount');
+    const fcard = document.getElementById('followupCard');
+    fc.textContent = coldGyms.length;
+    if (coldGyms.length > 0) {
+      fc.className = 'focus-number red';
+      fcard.className = 'focus-card urgent';
+      document.getElementById('followupDetail').textContent = `${coldGyms.length} gym${coldGyms.length > 1 ? 's' : ''} messaged 3+ days ago with no update — follow up today`;
+    } else {
+      fc.className = 'focus-number green';
+      fcard.className = 'focus-card good';
+      document.getElementById('followupDetail').textContent = 'All active gyms have been contacted within the last 2 days. Stay on it.';
+    }
+  }
+
+  function renderStories(stories) {
+    if (!stories) stories = [];
+    const tbody = document.getElementById('storyTableBody');
+    document.getElementById('storyTableCount').textContent = `${stories.length} stor${stories.length !== 1 ? 'ies' : 'y'} tracked`;
+
+    const queueCount = stories.filter(s => s.status !== 'Posted').length;
+    const sqc = document.getElementById('storyQueueCount');
+    const scard = document.getElementById('storyCard');
+    sqc.textContent = queueCount;
+    if (queueCount === 0) {
+      sqc.className = 'focus-number red';
+      scard.className = 'focus-card urgent';
+      document.getElementById('storyQueueDetail').textContent = 'No stories in queue — Wednesday needs one ready by Monday. Ask a claimed gym for an intro today.';
+    } else {
+      sqc.className = 'focus-number green';
+      scard.className = 'focus-card good';
+      document.getElementById('storyQueueDetail').textContent = `${queueCount} stor${queueCount > 1 ? 'ies' : 'y'} in pipeline. Keep building the queue — never go into a week without Wednesday covered.`;
+    }
+
+    if (stories.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No stories tracked yet — use the AI box: "Add a story from [Gym Name], student is [Name], status is Intro Made"</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = stories.map(s => `
+      <tr>
+        <td style="font-weight:600;color:#fff;">${s.gymName}</td>
+        <td>${s.studentName || '—'}</td>
+        <td>${storyStatusBadge(s.status)}</td>
+        <td style="font-size:12px;color:#888;">${s.scheduledDate || '—'}</td>
+        <td>${s.instagramPosted ? '<span style="color:#22c55e;">✓</span>' : '<span style="color:#555;">—</span>'}</td>
+        <td>${s.profilePosted ? '<span style="color:#22c55e;">✓</span>' : '<span style="color:#555;">—</span>'}</td>
+        <td style="color:#777;font-size:12px;">${s.notes || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function storyStatusBadge(status) {
+    const map = {
+      'Intro Made': 'badge-gray',
+      'Interview Scheduled': 'badge-blue',
+      'Collected': 'badge-yellow',
+      'Drafted': 'badge-purple',
+      'Posted': 'badge-green'
+    };
+    return `<span class="badge ${map[status] || 'badge-gray'}">${status || 'Intro Made'}</span>`;
+  }
+
+  function renderScorecard(weeklyScorecard) {
+    if (!weeklyScorecard || weeklyScorecard.length === 0) return;
+    const selector = document.getElementById('weekSelector');
+    selector.innerHTML = weeklyScorecard.map((w, i) => `
+      <button class="week-pill ${i === weeklyScorecard.length - 1 ? 'active' : ''}"
+        onclick="showScorecardWeek(${i})" id="week-pill-${i}">${w.week}</button>
+    `).join('');
+    showScorecardWeek(weeklyScorecard.length - 1);
+  }
+
+  function showScorecardWeek(weekIndex) {
+    document.querySelectorAll('.week-pill').forEach((p, i) => {
+      p.classList.toggle('active', i === weekIndex);
+    });
+    const week = dashData.weeklyScorecard[weekIndex];
+    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    const habits = [
+      { key: 'dmsHit', label: '150 DMs Sent' },
+      { key: 'postUp', label: 'Content Posted' },
+      { key: 'dashUpdated', label: 'Dashboard Updated' }
+    ];
+    const tbody = document.getElementById('scorecardBody');
+    tbody.innerHTML = habits.map(h => `
+      <tr>
+        <td>${h.label}</td>
+        ${days.map(day => `
+          <td>
+            <div class="check-box ${week.days[day][h.key] ? 'checked' : ''}"
+              onclick="toggleScorecard(${weekIndex}, '${day}', '${h.key}', this)">
+              <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </td>
+        `).join('')}
+      </tr>
+    `).join('');
+  }
+
+  async function toggleScorecard(weekIndex, day, field, el) {
+    el.classList.toggle('checked');
+    const res = await fetch('/api/scorecard-toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weekIndex, day, field })
+    });
+    const result = await res.json();
+    if (!result.success) el.classList.toggle('checked');
+    else dashData.weeklyScorecard[weekIndex].days[day][field] = result.value;
+  }
+
+  async function addScorecardWeek() {
+    const nextNum = dashData.weeklyScorecard.length + 1;
+    const weekLabel = `Week ${nextNum}`;
+    const res = await fetch('/api/scorecard-add-week', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weekLabel })
+    });
+    const result = await res.json();
+    if (result.success) {
+      dashData = result.data;
+      renderScorecard(dashData.weeklyScorecard);
+    }
+  }
+
+  function renderContent(content) {
+    const tbody = document.getElementById('contentTableBody');
+    document.getElementById('contentCount').textContent = `${content.length} post${content.length !== 1 ? 's' : ''}`;
+
+    if (content.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No content scheduled yet</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = content.map(c => `
+      <tr>
+        <td style="color:#555;font-size:12px;">${c.week}</td>
+        <td style="font-weight:600;color:#fff;">${c.day}</td>
+        <td>${c.type}</td>
+        <td style="color:#666;font-size:12px;">${c.source || '—'}</td>
+        <td>${statusBadge(c.status)}</td>
+        <td style="color:#444;font-size:12px;">${c.notes || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  // --- BADGE HELPERS ---
+  function stageBadge(stage) {
+    const map = {
+      'Not Contacted': 'badge-gray',
+      'Messaged': 'badge-blue',
+      'Responded': 'badge-yellow',
+      'Claimed': 'badge-green',
+      'Upsold': 'badge-purple',
+      'Closed': 'badge-orange'
+    };
+    return `<span class="badge ${map[stage] || 'badge-gray'}">${stage || 'Not Contacted'}</span>`;
+  }
+
+  function tierBadge(tier) {
+    const map = {
+      'None': 'badge-gray',
+      'Premium ($29)': 'badge-blue',
+      'Pro ($79)': 'badge-purple',
+      'City Feature ($149)': 'badge-yellow',
+      'State Feature ($399)': 'badge-red'
+    };
+    return `<span class="badge ${map[tier] || 'badge-gray'}">${tier || 'None'}</span>`;
+  }
+
+  function statusBadge(status) {
+    const map = {
+      'Not Started': 'badge-gray',
+      'In Progress': 'badge-yellow',
+      'Scheduled': 'badge-blue',
+      'Posted': 'badge-green'
+    };
+    return `<span class="badge ${map[status] || 'badge-gray'}">${status || 'Not Started'}</span>`;
+  }
+
+  // --- AI UPDATE ---
+  async function sendUpdate() {
+    const input = document.getElementById('promptInput');
+    const btn = document.getElementById('promptBtn');
+    const btnText = document.getElementById('btnText');
+    const response = document.getElementById('promptResponse');
+    const prompt = input.value.trim();
+
+    if (!prompt) return;
+
+    btn.disabled = true;
+    btnText.innerHTML = '<div class="spinner"></div>';
+    response.className = 'prompt-response';
+    response.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        dashData = result.data;
+        render(result.data);
+        input.value = '';
+        response.textContent = result.message || 'Dashboard updated.';
+        response.className = 'prompt-response visible';
+        showToast(result.message || 'Dashboard updated.', false);
+      } else {
+        response.textContent = 'Error: ' + result.error;
+        response.className = 'prompt-response error visible';
+        showToast('Update failed — try again', true);
+      }
+    } catch (err) {
+      response.textContent = 'Connection error. Is the server running?';
+      response.className = 'prompt-response error visible';
+    }
+
+    btn.disabled = false;
+    btnText.textContent = 'Update Dashboard';
+  }
+
+  function fillPrompt(el) {
+    document.getElementById('promptInput').value = el.textContent.trim();
+    document.getElementById('promptInput').focus();
+  }
+
+  // --- CAMPAIGN START ---
+  async function startCampaign() {
+    const btn = document.getElementById('campaignBtn');
+    if (btn.classList.contains('started')) return;
+    await fetch('/api/start-campaign', { method: 'POST' });
+    await loadData();
+    showToast('Campaign started! Day 1 begins now.', false);
+  }
+
+  // --- TOAST ---
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => { toast.className = 'toast' + (isError ? ' error' : ''); }, 4000);
+  }
+
+  // --- TEMPLATE TABS ---
+  function switchTemplate(touch, type) {
+    const panels = document.querySelectorAll(`#${touch} .template-panel`);
+    const tabs = document.querySelectorAll(`#${touch}`).forEach(() => {});
+    panels.forEach(p => p.classList.remove('active'));
+    document.getElementById(`${touch}-${type}`).classList.add('active');
+    const touchBlock = document.getElementById(touch).closest('.touch-block');
+    touchBlock.querySelectorAll('.tmpl-tab').forEach(t => t.classList.remove('active'));
+    touchBlock.querySelectorAll('.tmpl-tab').forEach(t => {
+      if (t.getAttribute('onclick').includes(`'${type}'`)) t.classList.add('active');
+    });
+  }
+
+  function copyTemplate(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.closest('.template-card').querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // --- TABS ---
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  }
+
+  // --- KEYBOARD SHORTCUT ---
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') sendUpdate();
+  });
+
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "campaignStartDate": null,
+  "scoreboard": {
+    "totalGyms": 8485,
+    "claimed": 88,
+    "paying": 0,
+    "statesActivated": 0,
+    "daysIntoCampaign": 0,
+    "mrr": 0,
+    "storiesCollected": 0,
+    "instagramPosts": 0
+  },
+  "milestones": [
+    { "id": 1, "label": "Georgia pilot launched", "completed": false },
+    { "id": 2, "label": "First 10 gyms claimed", "completed": false },
+    { "id": 3, "label": "First 5 gyms paying", "completed": false },
+    { "id": 4, "label": "First transformation story posted", "completed": false },
+    { "id": 5, "label": "First city feature sold", "completed": false },
+    { "id": 6, "label": "5 states activated", "completed": false },
+    { "id": 7, "label": "25 gyms paying", "completed": false },
+    { "id": 8, "label": "10 states activated", "completed": false },
+    { "id": 9, "label": "First $1,000 MRR", "completed": false },
+    { "id": 10, "label": "25 states activated", "completed": false },
+    { "id": 11, "label": "50 gyms paying", "completed": false },
+    { "id": 12, "label": "First $5,000 MRR", "completed": false },
+    { "id": 13, "label": "50 states activated — Day 50 complete", "completed": false },
+    { "id": 14, "label": "100 gyms paying", "completed": false }
+  ],
+  "gyms": [],
+  "stories": [],
+  "weeklyScorecard": [
+    {
+      "week": "Week 1",
+      "days": {
+        "Monday":    { "dmsHit": false, "postUp": false, "dashUpdated": false },
+        "Tuesday":   { "dmsHit": false, "postUp": false, "dashUpdated": false },
+        "Wednesday": { "dmsHit": false, "postUp": false, "dashUpdated": false },
+        "Thursday":  { "dmsHit": false, "postUp": false, "dashUpdated": false },
+        "Friday":    { "dmsHit": false, "postUp": false, "dashUpdated": false }
+      }
+    }
+  ],
+  "content": [
+    { "id": 1, "week": "Week 1", "day": "Monday",    "type": "State Locked In",     "source": "Georgia map graphic",    "status": "Not Started", "notes": "" },
+    { "id": 2, "week": "Week 1", "day": "Tuesday",   "type": "Gym Spotlight",        "source": "Kenny Kim BJJ Academy",  "status": "Not Started", "notes": "" },
+    { "id": 3, "week": "Week 1", "day": "Wednesday", "type": "Transformation Story", "source": "Existing story page",    "status": "Not Started", "notes": "" },
+    { "id": 4, "week": "Week 1", "day": "Thursday",  "type": "Your Gym on the List", "source": "Georgia unclaimed gyms", "status": "Not Started", "notes": "" },
+    { "id": 5, "week": "Week 1", "day": "Friday",    "type": "Weekly Progress",      "source": "Dashboard screenshot",   "status": "Not Started", "notes": "" }
+  ]
+}
