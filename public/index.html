@@ -71,7 +71,7 @@
     /* SCOREBOARD */
     .scoreboard {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-bottom: 32px;
     }
@@ -329,6 +329,7 @@
 
     @media (max-width: 900px) {
       .scoreboard { grid-template-columns: repeat(2, 1fr); }
+
       .two-col { grid-template-columns: 1fr; }
     }
 
@@ -606,7 +607,7 @@
       margin-bottom: 32px;
     }
     .outreach-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 18px; }
-    .outreach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .outreach-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .outreach-channel { }
     .outreach-channel-name { font-size: 12px; font-weight: 700; color: #f87171; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
     .outreach-step { font-size: 13px; color: #ccc; padding: 8px 0; border-bottom: 1px solid #1e1e1e; line-height: 1.5; }
@@ -758,10 +759,10 @@
   <!-- SCOREBOARD -->
   <div class="section-label">Live Scoreboard</div>
   <div class="scoreboard">
-    <div class="metric-card">
-      <div class="metric-label">Total Gyms Listed</div>
-      <div class="metric-value" id="totalGyms">8,485</div>
-      <div class="metric-sub">Across 50 states + 20 countries</div>
+    <div class="metric-card highlight">
+      <div class="metric-label">Accounts Followed</div>
+      <div class="metric-value" id="followed">0</div>
+      <div class="metric-sub">Instagram outreach pipeline</div>
     </div>
     <div class="metric-card highlight">
       <div class="metric-label">Gyms Claimed</div>
@@ -787,6 +788,11 @@
       <div class="metric-label">Days Into Campaign</div>
       <div class="metric-value" id="daysIntoCampaign">0<span>/50</span></div>
       <div class="metric-sub" id="daysRemaining">Campaign not started</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Total Gyms Listed</div>
+      <div class="metric-value" id="totalGyms">8,485</div>
+      <div class="metric-sub">Across 50 states + 20 countries</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Stories Collected</div>
@@ -1106,7 +1112,7 @@
   <!-- OUTREACH SEQUENCE -->
   <div class="section-label">The Outreach System</div>
   <div class="roadmap-outreach">
-    <div class="outreach-title">3-Touch Sequence — Instagram DM + Brevo Email</div>
+    <div class="outreach-title">4-Touch Sequence — Instagram DM + Brevo Email</div>
     <div class="outreach-grid">
       <div class="outreach-channel">
         <div class="outreach-channel-name">Touch 1 — Day 1</div>
@@ -1116,14 +1122,21 @@
         <div class="outreach-step"><strong>Volume:</strong> 150/day</div>
       </div>
       <div class="outreach-channel">
-        <div class="outreach-channel-name">Touch 2 — Day 3</div>
-        <div class="outreach-step"><strong>Platform:</strong> Instagram DM + Brevo Email</div>
-        <div class="outreach-step"><strong>Hook:</strong> The story angle</div>
-        <div class="outreach-step"><strong>Message:</strong> "We're collecting transformation stories for the MatMade Instagram starting in your state. Does your gym have a story worth telling?"</div>
-        <div class="outreach-step"><strong>Volume:</strong> Follow-up on all Day 1 sends</div>
+        <div class="outreach-channel-name">Touch 2 — Day 3 (No Reply)</div>
+        <div class="outreach-step"><strong>Platform:</strong> Instagram DM</div>
+        <div class="outreach-step"><strong>Hook:</strong> Urgency — your page is getting traffic right now</div>
+        <div class="outreach-step"><strong>Message:</strong> "Hey, just following up — didn't want this to get buried. People are searching BJJ in [City] and landing on your page right now. Just want to make sure you're the one controlling it."</div>
+        <div class="outreach-step"><strong>Volume:</strong> All Day 1 sends with no reply</div>
       </div>
       <div class="outreach-channel">
         <div class="outreach-channel-name">Touch 3 — Day 5</div>
+        <div class="outreach-step"><strong>Platform:</strong> Instagram DM + Brevo Email</div>
+        <div class="outreach-step"><strong>Hook:</strong> The story angle</div>
+        <div class="outreach-step"><strong>Message:</strong> "We're collecting transformation stories for the MatMade Instagram starting in your state. Does your gym have a story worth telling?"</div>
+        <div class="outreach-step"><strong>Volume:</strong> Gyms that have responded or claimed</div>
+      </div>
+      <div class="outreach-channel">
+        <div class="outreach-channel-name">Touch 4 — Day 7</div>
         <div class="outreach-step"><strong>Platform:</strong> Instagram DM + Phone</div>
         <div class="outreach-step"><strong>Hook:</strong> City feature scarcity</div>
         <div class="outreach-step"><strong>Message:</strong> "The featured gym spot for [City] is open this week. One gym per city — once it's gone it's gone. Do you want it?"</div>
@@ -1198,12 +1211,11 @@ MatMade Growth Team</div>
     <div class="touch-block">
       <div class="touch-header">
         <div class="touch-num">2</div>
-        <div class="touch-title">The Story Hook — We want to feature your gym</div>
-        <div class="touch-timing">Day 3 · Instagram DM + Brevo Email</div>
+        <div class="touch-title">The Follow-Up — Don't let it get buried</div>
+        <div class="touch-timing">Day 3 · No reply · Instagram DM only</div>
       </div>
       <div class="template-tabs">
         <button class="tmpl-tab active" onclick="switchTemplate('t2','dm')">Instagram DM</button>
-        <button class="tmpl-tab" onclick="switchTemplate('t2','email')">Brevo Email</button>
       </div>
       <div class="template-panels" id="t2">
         <div class="template-panel active" id="t2-dm">
@@ -1212,7 +1224,37 @@ MatMade Growth Team</div>
               <div class="template-card-label">Instagram DM — Touch 2</div>
               <button class="copy-btn" onclick="copyTemplate('t2-dm-body')">Copy</button>
             </div>
-            <div class="template-body" id="t2-dm-body">Hey <span class="template-var">[Gym Name]</span> — following up on your MatMade page.
+            <div class="template-body" id="t2-dm-body">Hey, just following up on this — didn't want it to get buried.
+
+Your MatMade page is getting traffic. People searching for BJJ in <span class="template-var">[City]</span> are landing on it right now. Just want to make sure what they see is accurate and that you're the one controlling it.
+
+Claim link is free: matmade.com/claim
+
+Let me know if you have any questions — happy to walk you through it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOUCH 3 -->
+    <div class="touch-block">
+      <div class="touch-header">
+        <div class="touch-num">3</div>
+        <div class="touch-title">The Story Hook — We want to feature your gym</div>
+        <div class="touch-timing">Day 5 · Instagram DM + Brevo Email</div>
+      </div>
+      <div class="template-tabs">
+        <button class="tmpl-tab active" onclick="switchTemplate('t3','dm')">Instagram DM</button>
+        <button class="tmpl-tab" onclick="switchTemplate('t3','email')">Brevo Email</button>
+      </div>
+      <div class="template-panels" id="t3">
+        <div class="template-panel active" id="t3-dm">
+          <div class="template-card">
+            <div class="template-card-header">
+              <div class="template-card-label">Instagram DM — Touch 3</div>
+              <button class="copy-btn" onclick="copyTemplate('t3-dm-body')">Copy</button>
+            </div>
+            <div class="template-body" id="t3-dm-body">Hey <span class="template-var">[Gym Name]</span> — following up on your MatMade page.
 
 We're building out our Transformation Story series for the MatMade Instagram (@matmade_show) and we're starting in <span class="template-var">[State]</span> this week.
 
@@ -1223,14 +1265,14 @@ Does your gym have someone like that? Kenny Kim is personally selecting the gyms
 No cost at all — just a 15-minute conversation with the student. Their story goes on our Instagram and lives permanently on your MatMade page.</div>
           </div>
         </div>
-        <div class="template-panel" id="t2-email">
+        <div class="template-panel" id="t3-email">
           <div class="template-card">
             <div class="template-card-header">
-              <div class="template-card-label">Brevo Email — Touch 2</div>
-              <button class="copy-btn" onclick="copyTemplate('t2-email-body')">Copy</button>
+              <div class="template-card-label">Brevo Email — Touch 3</div>
+              <button class="copy-btn" onclick="copyTemplate('t3-email-body')">Copy</button>
             </div>
             <div class="subject-line"><strong>Subject:</strong> We want to feature a story from <span class="template-var">[Gym Name]</span></div>
-            <div class="template-body" id="t2-email-body">Hey <span class="template-var">[First Name]</span>,
+            <div class="template-body" id="t3-email-body">Hey <span class="template-var">[First Name]</span>,
 
 I reached out a couple days ago about your MatMade listing — wanted to follow up with something different.
 
@@ -1257,25 +1299,25 @@ MatMade Growth Team</div>
       </div>
     </div>
 
-    <!-- TOUCH 3 -->
+    <!-- TOUCH 4 -->
     <div class="touch-block">
       <div class="touch-header">
-        <div class="touch-num">3</div>
+        <div class="touch-num">4</div>
         <div class="touch-title">The City Feature Close — One spot, 24 hours</div>
-        <div class="touch-timing">Day 5 · To claimed gyms only</div>
+        <div class="touch-timing">Day 7 · To claimed gyms only</div>
       </div>
       <div class="template-tabs">
-        <button class="tmpl-tab active" onclick="switchTemplate('t3','dm')">Instagram DM</button>
-        <button class="tmpl-tab" onclick="switchTemplate('t3','email')">Brevo Email</button>
+        <button class="tmpl-tab active" onclick="switchTemplate('t4','dm')">Instagram DM</button>
+        <button class="tmpl-tab" onclick="switchTemplate('t4','email')">Brevo Email</button>
       </div>
-      <div class="template-panels" id="t3">
-        <div class="template-panel active" id="t3-dm">
+      <div class="template-panels" id="t4">
+        <div class="template-panel active" id="t4-dm">
           <div class="template-card">
             <div class="template-card-header">
-              <div class="template-card-label">Instagram DM — Touch 3</div>
-              <button class="copy-btn" onclick="copyTemplate('t3-dm-body')">Copy</button>
+              <div class="template-card-label">Instagram DM — Touch 4</div>
+              <button class="copy-btn" onclick="copyTemplate('t4-dm-body')">Copy</button>
             </div>
-            <div class="template-body" id="t3-dm-body">Hey <span class="template-var">[Gym Name]</span> — your gym is verified on MatMade now.
+            <div class="template-body" id="t4-dm-body">Hey <span class="template-var">[Gym Name]</span> — your gym is verified on MatMade now.
 
 One more thing before we move on to the next city.
 
@@ -1288,14 +1330,14 @@ It's $149/month. If you want it reply and I'll hold the spot for 24 hours. If no
 Your call.</div>
           </div>
         </div>
-        <div class="template-panel" id="t3-email">
+        <div class="template-panel" id="t4-email">
           <div class="template-card">
             <div class="template-card-header">
-              <div class="template-card-label">Brevo Email — Touch 3</div>
-              <button class="copy-btn" onclick="copyTemplate('t3-email-body')">Copy</button>
+              <div class="template-card-label">Brevo Email — Touch 4</div>
+              <button class="copy-btn" onclick="copyTemplate('t4-email-body')">Copy</button>
             </div>
             <div class="subject-line"><strong>Subject:</strong> The <span class="template-var">[City]</span> featured spot — 24 hour hold for <span class="template-var">[Gym Name]</span></div>
-            <div class="template-body" id="t3-email-body">Hey <span class="template-var">[First Name]</span>,
+            <div class="template-body" id="t4-email-body">Hey <span class="template-var">[First Name]</span>,
 
 <span class="template-var">[Gym Name]</span> is now verified on MatMade — you're one of the first gyms in <span class="template-var">[City]</span> to claim your listing.
 
@@ -1421,6 +1463,7 @@ MatMade Growth Team</div>
   function render(data) {
     const s = data.scoreboard;
 
+    document.getElementById('followed').textContent = (s.followed || 0).toLocaleString();
     document.getElementById('totalGyms').textContent = s.totalGyms.toLocaleString();
     document.getElementById('claimed').textContent = s.claimed.toLocaleString();
     document.getElementById('paying').textContent = s.paying.toLocaleString();
