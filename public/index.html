@@ -702,6 +702,45 @@
       color: #f59e0b;
       font-weight: 700;
     }
+
+    /* DEBRIEF */
+    .debrief-wrap { max-width: 1280px; margin: 0 auto; padding: 32px; }
+    .debrief-header { margin-bottom: 28px; }
+    .debrief-header h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .debrief-header p { font-size: 14px; color: #bbb; }
+    .debrief-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+    .debrief-stat { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 20px; }
+    .debrief-stat-value { font-size: 44px; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; }
+    .debrief-stat-value.green { color: #22c55e; }
+    .debrief-stat-value.red { color: #dc2626; }
+    .debrief-stat-value.gold { color: #f59e0b; }
+    .debrief-stat-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .debrief-stat-sub { font-size: 12px; color: #555; margin-top: 6px; }
+    .debrief-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+    .debrief-panel { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 24px; }
+    .debrief-panel-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+    .debrief-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #161616; font-size: 13px; }
+    .debrief-list-item:last-child { border-bottom: none; }
+    .debrief-list-label { color: #ccc; }
+    .debrief-list-val { font-weight: 700; color: #fff; }
+    .debrief-list-val.green { color: #22c55e; }
+    .debrief-list-val.red { color: #dc2626; }
+    .debrief-list-val.gold { color: #f59e0b; }
+    .gap-gym-link { font-size: 11px; color: #dc2626; text-decoration: none; }
+    .gap-gym-link:hover { text-decoration: underline; }
+    .action-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid #161616; }
+    .action-item:last-child { border-bottom: none; }
+    .action-num { width: 24px; height: 24px; background: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+    .action-content { flex: 1; }
+    .action-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .action-detail { font-size: 12px; color: #888; line-height: 1.5; }
+    .action-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; margin-left: 8px; vertical-align: middle; }
+    .action-tag.urgent { background: #450a0a; color: #f87171; }
+    .action-tag.today { background: #14532d; color: #4ade80; }
+    @media (max-width: 900px) {
+      .debrief-stats { grid-template-columns: repeat(2, 1fr); }
+      .debrief-two-col { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -727,6 +766,7 @@
   <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
   <button class="tab-btn" onclick="switchTab('roadmap')">Roadmap</button>
   <button class="tab-btn" onclick="switchTab('objections')">Objections</button>
+  <button class="tab-btn" onclick="switchTab('debrief')">Debrief</button>
 </div>
 
 <!-- TAB: DASHBOARD -->
@@ -1430,6 +1470,212 @@ MatMade Growth Team</div>
   </div>
 </div>
 </div><!-- end tab-objections -->
+
+<!-- TAB: DEBRIEF -->
+<div class="tab-panel" id="tab-debrief">
+<div class="debrief-wrap">
+
+  <div class="debrief-header">
+    <h2>Georgia Pilot — Debrief</h2>
+    <p>Campaign check-in · June 2, 2026 · 12 days in · Georgia state run · Outreach began May 21, 2026</p>
+  </div>
+
+  <!-- KEY STATS -->
+  <div class="section-label">Georgia Run at a Glance</div>
+  <div class="debrief-stats">
+    <div class="debrief-stat">
+      <div class="debrief-stat-label">In Pipeline</div>
+      <div class="debrief-stat-value">65</div>
+      <div class="debrief-stat-sub">Georgia gyms tracked</div>
+    </div>
+    <div class="debrief-stat">
+      <div class="debrief-stat-label">Messaged (Touch 1 Sent)</div>
+      <div class="debrief-stat-value gold">57</div>
+      <div class="debrief-stat-sub">Active outreach pipeline</div>
+    </div>
+    <div class="debrief-stat">
+      <div class="debrief-stat-label">Verified / Claimed</div>
+      <div class="debrief-stat-value green">4</div>
+      <div class="debrief-stat-sub">7% claim rate on DMs sent</div>
+    </div>
+    <div class="debrief-stat">
+      <div class="debrief-stat-label">Paying</div>
+      <div class="debrief-stat-value red">0</div>
+      <div class="debrief-stat-sub">Touch 4 pitch not sent yet</div>
+    </div>
+  </div>
+
+  <div class="debrief-two-col">
+
+    <!-- OUTREACH BREAKDOWN -->
+    <div>
+      <div class="section-label">Outreach Breakdown</div>
+      <div class="debrief-panel">
+        <div class="debrief-panel-title">Pipeline Stage Breakdown</div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Total gyms in Georgia pipeline</span>
+          <span class="debrief-list-val">65</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Touch 1 sent (Messaged)</span>
+          <span class="debrief-list-val gold">57</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Verified / Claimed their page</span>
+          <span class="debrief-list-val green">4</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Removed from pipeline</span>
+          <span class="debrief-list-val">8</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Claim rate (verified / messaged)</span>
+          <span class="debrief-list-val green">7%</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Gyms paying</span>
+          <span class="debrief-list-val red">0</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Days into campaign</span>
+          <span class="debrief-list-val">12</span>
+        </div>
+        <div class="debrief-list-item">
+          <span class="debrief-list-label">Georgia gyms on MatMade, not in pipeline</span>
+          <span class="debrief-list-val gold">10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEXT ACTIONS -->
+    <div>
+      <div class="section-label">Next Actions</div>
+      <div class="debrief-panel">
+        <div class="debrief-panel-title">What Needs to Happen Now</div>
+        <div class="action-item">
+          <div class="action-num">1</div>
+          <div class="action-content">
+            <div class="action-title">Send Touch 4 to the 4 verified gyms <span class="action-tag urgent">URGENT</span></div>
+            <div class="action-detail">City feature pitch ($149/mo) — one per city, scarcity close. These are the warmest leads right now.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-num">2</div>
+          <div class="action-content">
+            <div class="action-title">Update the 4 claimed gyms in dashboard <span class="action-tag today">TODAY</span></div>
+            <div class="action-detail">Use the AI Update box: "Gym Name in City claimed their page — stage is Claimed." Do this for all 4 so follow-ups fire correctly.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-num">3</div>
+          <div class="action-content">
+            <div class="action-title">Send Touch 2 to gyms 3+ days cold</div>
+            <div class="action-detail">Check the Needs Follow-Up count on the Dashboard tab — any gym 3+ days without a stage update needs the follow-up DM today.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-num">4</div>
+          <div class="action-content">
+            <div class="action-title">Add the 10 gap gyms to the pipeline</div>
+            <div class="action-detail">Georgia gyms confirmed on MatMade but missing from outreach — listed in the table below. Add and DM this week.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-num">5</div>
+          <div class="action-content">
+            <div class="action-title">Begin planning next state</div>
+            <div class="action-detail">Georgia pilot proven at 7% claim rate. Florida, Texas, California, or New York are highest-volume states to hit next.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GAP GYMS TABLE -->
+  <div class="section-label">Georgia Gyms on MatMade — Not Yet in Pipeline</div>
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Outreach Gaps</div>
+      <div class="table-count">10 gyms — add and DM this week</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Gym Name</th>
+          <th>City</th>
+          <th>MatMade Page</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="font-weight:600;color:#fff;">Megalodon</td><td>Watkinsville</td><td><a href="https://matmade.com/gyms/megalodon" target="_blank" class="gap-gym-link">matmade.com/gyms/megalodon</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Kyle Fogel Brazilian Jiu Jitsu</td><td>Sugar Hill</td><td><a href="https://matmade.com/gyms/kyle-fogel-brazilian-jiu-jitsu" target="_blank" class="gap-gym-link">kyle-fogel-brazilian-jiu-jitsu</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Frontline Jiu-Jitsu</td><td>Martinez</td><td><a href="https://matmade.com/gyms/frontline-jiu-jitsu" target="_blank" class="gap-gym-link">frontline-jiu-jitsu</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Gracie Jiu-Jitsu Balance Academy</td><td>Peachtree City</td><td><a href="https://matmade.com/gyms/gracie-jiu-jitsu-balance-academy" target="_blank" class="gap-gym-link">gracie-jiu-jitsu-balance-academy</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Carlos Machado JJ North Atlanta</td><td>Acworth</td><td><a href="https://matmade.com/gyms/carlos-machado-jiu-jitsu-north-atlanta" target="_blank" class="gap-gym-link">carlos-machado-jiu-jitsu-north-atlanta</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Legacy MMA Club</td><td>Sugar Hill</td><td><a href="https://matmade.com/gyms/legacy-mma-club-and-kids-summer-camp" target="_blank" class="gap-gym-link">legacy-mma-club-and-kids-summer-camp</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Team Manu MMA Club</td><td>Smyrna</td><td><a href="https://matmade.com/gyms/team-manu-mma-club" target="_blank" class="gap-gym-link">team-manu-mma-club</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Odyssey BJJ</td><td>Atlanta</td><td><a href="https://matmade.com/gyms/odyssey-bjj" target="_blank" class="gap-gym-link">odyssey-bjj</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">SERRA BJJ Milledgeville</td><td>Milledgeville</td><td><a href="https://matmade.com/gyms/serra-bjj-milledgeville" target="_blank" class="gap-gym-link">serra-bjj-milledgeville</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+        <tr><td style="font-weight:600;color:#fff;">Greubel's MMA of Grovetown</td><td>Grovetown</td><td><a href="https://matmade.com/gyms/greubels-mma-of-grovetown" target="_blank" class="gap-gym-link">greubels-mma-of-grovetown</a></td><td><span class="badge badge-red">Not Contacted</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WHAT'S WORKING / WHAT'S NOT -->
+  <div class="section-label">Pilot Read — What We Know So Far</div>
+  <div class="debrief-two-col">
+    <div class="debrief-panel">
+      <div class="debrief-panel-title" style="color:#22c55e;">What's Working</div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">7% claim rate on Touch 1 DMs</span>
+        <span class="debrief-list-val green">Above baseline</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">65 gyms sourced and DM'd in 12 days</span>
+        <span class="debrief-list-val green">Strong volume</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">Dashboard tracking all stages live</span>
+        <span class="debrief-list-val green">Operational</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">4-touch sequence in place and running</span>
+        <span class="debrief-list-val green">On track</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">Georgia pilot launched milestone hit</span>
+        <span class="debrief-list-val green">Complete</span>
+      </div>
+    </div>
+    <div class="debrief-panel">
+      <div class="debrief-panel-title" style="color:#dc2626;">Gaps to Close</div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">No paying gyms — Touch 4 not sent yet</span>
+        <span class="debrief-list-val red">Fix Now</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">10 MatMade Georgia gyms missing from pipeline</span>
+        <span class="debrief-list-val red">Add Them</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">4 claimed gyms still show Messaged in dashboard</span>
+        <span class="debrief-list-val red">Update</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">Story pipeline completely empty</span>
+        <span class="debrief-list-val red">Start Now</span>
+      </div>
+      <div class="debrief-list-item">
+        <span class="debrief-list-label">No content posted yet this campaign</span>
+        <span class="debrief-list-val red">Week 1 overdue</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end tab-debrief -->
 
 <!-- TOAST -->
 <div class="toast" id="toast">
